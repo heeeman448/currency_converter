@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Currency Converter</title>
+   <style>
+       /* Styling remains the same as before */
+      
+       body {
+           font-family: Arial, sans-serif;
+           background-image:url("https://media.istockphoto.com/id/153517936/photo/silver-dollar.jpg?s=612x612&w=0&k=20&c=VqZ4HtPa4Gxg-HjKWqPdEbq-gm0QQpR3rX-Hucwfy9c=");
+           background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           height: 100vh;
+           margin: 0;
+       }
+      
+       .converter-container {
+           background-color: white;
+           border-radius: 10px;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+           padding: 20px;
+           width: 300px;
+           text-align: center;
+           margin-left: 40%;
+           border: 1px solid black;
+       }
+       h1 {
+           color: #333;
+           margin-bottom: 20px;
+           font-family:'Times New Roman', Times, serif;
+       } 
+       .result {
+           font-size: 18px;
+           margin-top: 20px;
+           color: #333;
+       }
+       button{
+           margin-top: 5%;
+       }
+   </style>
+</head>
+<body>
+   <div class="converter-container">
+       <h1>Conversion Result</h1>
+
+
+       <div id="conversion-result" class="result">
+           <!-- Result will be populated here -->
+       </div>
+
+
+       <button onclick="goBack()">Go Back</button>
+   </div>
+   <script>
+       const apiUrl = 'https://api.exchangerate-api.com/v4/latest/USD';
+       // Fetch the data from URL parameters
+       const params = new URLSearchParams(window.location.search);
+       const fromCurrency = params.get('from');
+       const toCurrency = params.get('to');
+       const amount = params.get('amount');
+       // Fetch exchange rates and display the result
+       async function displayConversionResult() {
+           try {
+               const response = await fetch(apiUrl);
+               const data = await response.json();
+               const rates = data.rates;
+
+
+               if (fromCurrency === toCurrency) {
+                   document.getElementById('conversion-result').textContent = `The amount is the same: ${amount} ${fromCurrency}`;
+                   return;
+               }
+               const fromRate = rates[fromCurrency];
+               const toRate = rates[toCurrency];
+               const convertedAmount = (amount / fromRate) * toRate;
+
+
+               document.getElementById('conversion-result').textContent = `${amount} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
+           } catch (error) {
+               document.getElementById('conversion-result').textContent = 'Error in conversion, please try again.';
+           }
+       }
+       // Go back to the input page
+       function goBack() {
+           window.location.href = 'index.html'; // Link back to the input page (Page 1)
+       }
+       // Display the conversion result when the page loads
+       displayConversionResult();
+   </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Currency Converter</title>
+   <style>
+       body {
+           font-family: Arial, sans-serif;
+           background-image: url("https://www.extravelmoney.com/blog/wp-content/uploads/2021/04/How-Do-Banks-in-India-Get-Foreign-Currency.jpg");
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           height: 100vh;
+           margin: 0;
+       }
+      
+       .converter-container {
+           background-color:rgb(233, 223, 202);
+           border-radius: 10px;
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+           padding: 20px;
+           width: 300px;
+           text-align: center;
+           border:1px solid black;
+       }
+      
+       h1 {
+           color: #333;
+           margin-bottom: 20px;
+           font-family:'Times New Roman', Times, serif;
+       }
+      
+       select,
+       input {
+           width: 100%;
+           padding: 10px;
+           margin: 10px 0;
+           border: 1px solid #ddd;
+           border-radius: 5px;
+           font-size: 16px;
+       }
+      
+       button {
+           padding: 10px 15px;
+           background-color: #d6b959;
+           color: rgb(0, 0, 0);
+           border: none;
+           border-radius: 5px;
+           cursor: pointer;
+           font-size: 16px;
+           width: 100%;
+           font-family:Georgia, 'Times New Roman', Times, serif;
+       }
+       #amount{
+           width: 93%;
+       }
+   </style>
+</head>
+
+
+<body>
+
+
+   <div class="converter-container">
+       <h1>Currency Converter</h1>
+
+
+       <select id="from-currency" class="currency-select">
+           <!-- Add currency options here dynamically -->
+       </select>
+
+
+       <select id="to-currency" class="currency-select">
+           <!-- Add currency options here dynamically -->
+       </select>
+
+
+       <input type="number" id="amount" placeholder="Amount" />
+
+
+       <button onclick="goToConversionPage()">Convert</button>
+   </div>
+
+
+   <script>
+       const apiUrl = 'https://api.exchangerate-api.com/v4/latest/USD';
+
+
+
+
+       async function fetchCurrencies() {
+           try {
+               const response = await fetch(apiUrl);
+               const data = await response.json();
+               const currencies = Object.keys(data.rates);
+               populateCurrencyDropdowns(currencies);
+           } catch (error) {
+               alert("Failed to load currency data.");
+           }
+       }
+
+
+       // Populate the currency dropdowns
+       function populateCurrencyDropdowns(currencies) {
+           const fromCurrencySelect = document.getElementById('from-currency');
+           const toCurrencySelect = document.getElementById('to-currency');
+           currencies.forEach(currency => {
+               const option = document.createElement('option');
+               option.value = currency;
+               option.textContent = currency;
+               fromCurrencySelect.appendChild(option);
+               toCurrencySelect.appendChild(option.cloneNode(true));
+           });
+       }
+
+
+       // Move to the conversion result page with the data
+       function goToConversionPage() {
+           const fromCurrency = document.getElementById('from-currency').value;
+           const toCurrency = document.getElementById('to-currency').value;
+           const amount = document.getElementById('amount').value;
+
+
+           if (!amount || isNaN(amount) || amount <= 0) {
+               alert("Please enter a valid amount.");
+               return;
+           }
+
+
+           // Pass data to another page via URL parameters
+           window.location.href = `conversion.html?from=${fromCurrency}&to=${toCurrency}&amount=${amount}`;
+       }
+
+
+       // Initialize by fetching currencies
+       fetchCurrencies();
+   </script>
+</body>
+</html>
